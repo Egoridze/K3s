@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    project: mysql
+  name: mysql
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      project: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        project: mysql
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_DATABASE
+              value: tradeoffer_db
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          imagePullPolicy: Never
+          image: {{.Values.container.dbimage}}
+          livenessProbe:
+            exec:
+              command:
+                - ls
+            periodSeconds: 10
+            timeoutSeconds: 10
+          readnessProbe:
+            exec:
+              command:
+                - ls
+            periodSeconds: 10
+            timeoutSeconds: 10          
+          resources:
+            requests:
+                memory: {{.Values.container.resources.requests.memory | quote}} 
+                cpu: {{.Values.container.resources.requests.cpu | quote}} 
+            limits:
+                memory: {{.Values.container.resources.limits.memory | quote}} 
+                cpu: {{.Values.container.resources.limits.cpu | quote}}
+          name: database
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: devops-mysql-data
+      restartPolicy: Always
+      volumes:
+        - name: devops-mysql-data
+          persistentVolumeClaim:
+            claimName: devops-mysql-data
+status: {}

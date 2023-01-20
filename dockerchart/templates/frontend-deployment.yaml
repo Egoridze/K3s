@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    project: frontend
+  name: frontend
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      project: frontend
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        project: frontend
+    spec:
+      containers:
+        - env:
+            - name: SERVER_ORIGIN
+              value: backend:3001
+          imagePullPolicy: Never
+          image: {{.Values.container.frontimage}}
+          livenessProbe:
+            exec:
+              command:
+                - ls
+            periodSeconds: 10
+            timeoutSeconds: 10
+          readnessProbe:
+            exec:
+              command:
+                - ls
+            periodSeconds: 10
+            timeoutSeconds: 10
+          resources:
+            requests:
+                memory: {{.Values.container.resources.requests.memory | quote}} 
+                cpu: {{.Values.container.resources.requests.cpu | quote}} 
+            limits:
+                memory: {{.Values.container.resources.limits.memory | quote}} 
+                cpu: {{.Values.container.resources.limits.cpu | quote}} 
+          name: frontend
+          ports:
+            - containerPort: 3002
+      restartPolicy: Always
+status: {}

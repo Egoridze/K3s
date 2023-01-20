@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    project: adminer
+  name: adminer
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      project: adminer
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        project: adminer
+    spec:
+      containers:
+        - image: {{.Values.container.adminerimage}}
+          livenessProbe:
+            exec:
+              command:
+                - ls
+            periodSeconds: 10
+            timeoutSeconds: 10
+          readnessProbe:
+            exec:
+              command:
+                - ls
+            periodSeconds: 10
+            timeoutSeconds: 10        
+          resources:
+            requests:
+              memory: {{.Values.container.resources.requests.memory | quote}} 
+              cpu: {{.Values.container.resources.requests.cpu | quote}} 
+            limits:
+              memory: {{.Values.container.resources.limits.memory | quote}} 
+              cpu: {{.Values.container.resources.limits.cpu | quote}}             
+          name: adminer
+          ports:
+            - containerPort: 8080
+      restartPolicy: Always
+status: {}

@@ -1,0 +1,17 @@
+#Values
+
+container:
+    backimage: devops_backend:v1
+    frontimage: devops_frontend:v1
+    dbimage: mysql_utf8mb4:5.7
+    adminerimage: adminer
+    
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "500m"
+      limits:
+        memory: "1024Mi"
+        cpu: "1000m"
+    
+replicaCount: 1
