@@ -27,12 +27,6 @@ spec:
                 - ls
             periodSeconds: 10
             timeoutSeconds: 10
-          readnessProbe:
-            exec:
-              command:
-                - ls
-            periodSeconds: 10
-            timeoutSeconds: 10
           resources:
             requests:
                 memory: {{.Values.container.resources.requests.memory | quote}} 
